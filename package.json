@@ -1,0 +1,21 @@
+{
+  "name": "back_pr_bd",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "repository": "https://github.com/jeovanedossantossantos/back_pr_bd.git",
+  "author": "jeovanedossantossantos <jeovane.ssantos@outlook.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "db": "node ./src/dataBase/sqls/00_create_data_base.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "2.3.3"
+  }
+}
