@@ -99,7 +99,9 @@ db.connect(function (err) {
         estado_civil VARCHAR(255),
         profissao VARCHAR(255),
         fiador_id INT, 
-        FOREIGN KEY (endereco_id) REFERENCES endereco(id)
+        FOREIGN KEY (endereco_id) REFERENCES endereco(id),
+        FOREIGN KEY (fiador_id) REFERENCES fiador(id)
+
     )
         
         `;
