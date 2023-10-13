@@ -99,9 +99,7 @@ db.connect(function (err) {
         sexo ENUM('Masculino', 'Feminino', 'Outro'),
         estado_civil VARCHAR(255),
         profissao VARCHAR(255),
-        fiador_id INT, 
-        FOREIGN KEY (endereco_id) REFERENCES endereco(id),
-        FOREIGN KEY (fiador_id) REFERENCES fiador(id)
+        FOREIGN KEY (endereco_id) REFERENCES endereco(id)
 
     )
         
@@ -121,7 +119,8 @@ db.connect(function (err) {
     CREATE TABLE IF NOT EXISTS cargo (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255),
-        salario_base DECIMAL(10, 2)
+        salario_base DECIMAL(10, 2),
+        porcentagem INT NOT NULL 
     )
         
         `;
@@ -144,10 +143,11 @@ db.connect(function (err) {
     telefone VARCHAR(15),
     cpf VARCHAR(14) NOT NULL,
     endereco_id INT NOT NULL,
-    data_engresso DATE NOT NULL,
+    data_ingresso DATE NOT NULL,
     email VARCHAR(255) NOT NULL,
     usuario VARCHAR(255) NOT NULL,
     senha VARCHAR(255),
+    estado_civil VARCHAR(255) NOT NULL,
     cargo_id INT NOT NULL,
     FOREIGN KEY (endereco_id) REFERENCES endereco(id), 
     FOREIGN KEY (cargo_id) REFERENCES cargo(id)
@@ -157,6 +157,27 @@ db.connect(function (err) {
     db.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Table funcionario created");
+        return
+    });
+});
+
+//tabela de Registro de Imoveis
+db.connect(function (err) {
+    if (err) throw err;
+
+    var sql = `
+    CREATE TABLE IF NOT EXISTS registroImovel (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+    id_clientep INT NOT NULL,
+    id_imovel INT NOT NULL,
+    FOREIGN KEY (id_clientep) REFERENCES clienteProprietario(id), 
+    FOREIGN KEY (id_imovel) REFERENCES imovel(id)
+    )
+        
+        `;
+    db.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Table registroImovel created");
         return
     });
 });
@@ -177,9 +198,8 @@ db.connect(function (err) {
     valor_locacao DECIMAL(10, 2),
     disponivel BOOLEAN,
     id_status INT NOT NULL,
-    ID_endereco INT NOT NULL
-    FOREIGN KEY (id_endereco) REFERENCES endereco(id), 
-    FOREIGN KEY (cargo_id) REFERENCES cargo(id)
+    id_endereco INT NOT NULL,
+    FOREIGN KEY (id_endereco) REFERENCES endereco(id)
     )
         
         `;
@@ -203,7 +223,7 @@ db.connect(function (err) {
         `;
     db.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Table Imovel created");
+        console.log("Table formaPagamento created");
         return
     });
 });
@@ -222,20 +242,20 @@ db.connect(function (err) {
     id_indic2 INT NOT NULL,
     id_fiador INT NOT NULL,
     id_formpag INT NOT NULL,
-    data_transacao DATE
+    data_transacao DATE,
     FOREIGN KEY (id_funcionario) REFERENCES funcionario(id), 
     FOREIGN KEY (id_imovel) REFERENCES imovel(id), 
-    FOREIGN KEY (id_clienteu) REFERENCES clienteUsuario(id)
-    FOREIGN KEY (id_indic1) REFERENCES indicador(id)
-    FOREIGN KEY (id_indic2) REFERENCES indicador(id)
-    FOREIGN KEY (id_fiador) REFERENCES fiador(id)
+    FOREIGN KEY (id_clienteu) REFERENCES clienteUsuario(id),
+    FOREIGN KEY (id_indic1) REFERENCES indicador(id),
+    FOREIGN KEY (id_indic2) REFERENCES indicador(id),
+    FOREIGN KEY (id_fiador) REFERENCES fiador(id),
     FOREIGN KEY (id_formpag) REFERENCES formaPagamento(id)
     )
         
         `;
     db.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Table Imovel created");
+        console.log("Table contratoAluguel created");
         return
     });
 });
@@ -252,17 +272,17 @@ db.connect(function (err) {
     id_imovel INT NOT NULL,
     id_clienteu INT NOT NULL,
     id_formpag INT NOT NULL,
-    data_transacao DATE
+    data_transacao DATE,
     FOREIGN KEY (id_funcionario) REFERENCES funcionario(id), 
     FOREIGN KEY (id_imovel) REFERENCES imovel(id), 
-    FOREIGN KEY (id_clienteu) REFERENCES clienteUsuario(id)
+    FOREIGN KEY (id_clienteu) REFERENCES clienteUsuario(id),
     FOREIGN KEY (id_formpag) REFERENCES formaPagamento(id)
     )
         
         `;
     db.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Table Imovel created");
+        console.log("Table contratoVenda created");
         return
     });
 });
