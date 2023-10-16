@@ -316,6 +316,8 @@ db.connect(function (err) {
         console.log("Table Casa created");
         return
     });
+});
+
     // Tabela Apartamento
     db.connect(function (err) {
         if (err) throw err;
@@ -346,6 +348,4 @@ db.connect(function (err) {
             console.log("Table Apartamento created");
             return;
         });
-});
-
 });
