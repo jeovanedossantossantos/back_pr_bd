@@ -349,3 +349,29 @@ db.connect(function (err) {
             return;
         });
 });
+
+    // Tabela SalaComercial
+    db.connect(function (err) {
+        if (err) throw err;
+
+        var sql = `
+        CREATE TABLE IF NOT EXISTS SalaComercial (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            id_imovel INT NOT NULL,
+            descricao TEXT NOT NULL,
+            qtd_banheiro INT NOT NULL,
+            qtd_comodos INT NOT NULL,
+            area_imovel DECIMAL(10, 2) NOT NULL,
+            data_registro DATE NOT NULL,
+            data_vendido DATE,
+            data_locacao DATE,
+            FOREIGN KEY (id_imovel) REFERENCES Imovel(id)
+        )
+        `;
+        db.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("Table SalaComercial created");
+            return;
+        });
+    });
+
