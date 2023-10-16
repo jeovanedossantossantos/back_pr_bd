@@ -161,27 +161,6 @@ db.connect(function (err) {
     });
 });
 
-//tabela de Registro de Imoveis
-db.connect(function (err) {
-    if (err) throw err;
-
-    var sql = `
-    CREATE TABLE IF NOT EXISTS registroImovel (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-    id_clientep INT NOT NULL,
-    id_imovel INT NOT NULL,
-    FOREIGN KEY (id_clientep) REFERENCES clienteProprietario(id), 
-    FOREIGN KEY (id_imovel) REFERENCES imovel(id)
-    )
-        
-        `;
-    db.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("Table registroImovel created");
-        return
-    });
-});
-
 // Tabela Imovel
 db.connect(function (err) {
     if (err) throw err;
@@ -206,6 +185,27 @@ db.connect(function (err) {
     db.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Table Imovel created");
+        return
+    });
+});
+
+//tabela de Registro de Imoveis
+db.connect(function (err) {
+    if (err) throw err;
+
+    var sql = `
+    CREATE TABLE IF NOT EXISTS registroImovel (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+    id_clientep INT NOT NULL,
+    id_imovel INT NOT NULL,
+    FOREIGN KEY (id_clientep) REFERENCES clienteProprietario(id), 
+    FOREIGN KEY (id_imovel) REFERENCES imovel(id)
+    )
+        
+        `;
+    db.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Table registroImovel created");
         return
     });
 });
