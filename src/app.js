@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const router = require('./routes');
 require("./dataBase/connect")
 
@@ -6,6 +7,7 @@ class App {
     constructor() {
 
         this.server = express()
+        this.middleware()
         this.routes()
 
     };

@@ -120,7 +120,8 @@ db.connect(function (err) {
         id INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255),
         salario_base DECIMAL(10, 2),
-        porcentagem INT NOT NULL 
+        porcentagem INT NOT NULL,
+        UNIQUE (nome,salario_base,porcentagem)
     )
         
         `;
@@ -150,7 +151,8 @@ db.connect(function (err) {
     estado_civil VARCHAR(255) NOT NULL,
     cargo_id INT NOT NULL,
     FOREIGN KEY (endereco_id) REFERENCES endereco(id), 
-    FOREIGN KEY (cargo_id) REFERENCES cargo(id)
+    FOREIGN KEY (cargo_id) REFERENCES cargo(id),
+    UNIQUE (cpf)
     )
         
         `;
@@ -287,8 +289,8 @@ db.connect(function (err) {
     });
 });
 
-   // Tabela Casa
-   db.connect(function (err) {
+// Tabela Casa
+db.connect(function (err) {
     if (err) throw err;
 
     var sql = `
@@ -318,11 +320,11 @@ db.connect(function (err) {
     });
 });
 
-    // Tabela Apartamento
-    db.connect(function (err) {
-        if (err) throw err;
+// Tabela Apartamento
+db.connect(function (err) {
+    if (err) throw err;
 
-        var sql = `
+    var sql = `
         CREATE TABLE IF NOT EXISTS Apartamento (
             id INT AUTO_INCREMENT PRIMARY KEY,
             id_imovel INT NOT NULL,
@@ -343,18 +345,18 @@ db.connect(function (err) {
             FOREIGN KEY (id_imovel) REFERENCES Imovel(id)
         )
         `;
-        db.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("Table Apartamento created");
-            return;
-        });
+    db.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Table Apartamento created");
+        return;
+    });
 });
 
-    // Tabela SalaComercial
-    db.connect(function (err) {
-        if (err) throw err;
+// Tabela SalaComercial
+db.connect(function (err) {
+    if (err) throw err;
 
-        var sql = `
+    var sql = `
         CREATE TABLE IF NOT EXISTS SalaComercial (
             id INT AUTO_INCREMENT PRIMARY KEY,
             id_imovel INT NOT NULL,
@@ -368,15 +370,15 @@ db.connect(function (err) {
             FOREIGN KEY (id_imovel) REFERENCES Imovel(id)
         )
         `;
-        db.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("Table SalaComercial created");
-            return;
-        });
+    db.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Table SalaComercial created");
+        return;
     });
-    
-    // Tabela Terreno
-    db.connect(function (err) {
+});
+
+// Tabela Terreno
+db.connect(function (err) {
     if (err) throw err;
 
     var sql = `
