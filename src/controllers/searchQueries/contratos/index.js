@@ -1,148 +1,184 @@
 const db = require("../../../dataBase/connect")
 
-module.exports = {
+class Contrato {
     async listarTodosOsContratos(req, res) {
-
-        let resultados=[];
+        let resultados = [];
 
         db.query(
             "SELECT * FROM contratoAluguel"
-        ,
-        function(err, results) {
-            if(err){
-                console.log(err);
-                res.status(500).json({ data: "Erro Interno do Servidor" });
-            }else if(results.length > 0){
-                resultados = resultados.concat(results)
-                // results.forEach(dado => {
-                //     resultados.add(dado);
-                // });
-            }
-        });
+            ,
+            function (err, results) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ data: "Erro Interno do Servidor" });
+                } else if (results.length > 0) {
+                    resultados = resultados.concat(results);
+                }
+            });
 
         db.query(
             "SELECT * FROM contratoVenda"
             ,
-            function(err, results) {
-                if(err){
+            function (err, results) {
+                if (err) {
                     console.log(err);
                     res.status(500).json({ data: "Erro Interno do Servidor" });
-                }else if(results.length > 0){
-                    console.log(results)
-                    resultados = resultados.concat(results)
-
-                    // results.forEach(dado => {
-                    //     resultados.add(dado);
-                    // });
-                }
-                if (resultados === null) {
-                    return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                } else if (results.length > 0) {
+                    resultados = resultados.concat(results);
+                    if (resultados === null) {
+                        return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                    } else {
+                        return res.status(200).json({ data: resultados });
+                    }
                 } else {
-                    return res.status(200).json({ data: resultados });
+                    return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
                 }
             });
-    },
+    }
 
     async listarPorTipoDeContrato(req, res) {
-
-        if(req.body.idTipoContrato !== null){
+        if (req.body.idTipoContrato !== null) {
             let idTipoContrato = req.body.idTipoContrato;
+            let resultados = [];
             let sqlQuery;
 
-            if(idTipoContrato === 1){
+            idTipoContrato = parseInt(idTipoContrato);
+
+            if (idTipoContrato === 1) {
                 sqlQuery = `
                     SELECT * FROM contratoAluguel 
-                `    
-            }else if(idTipoContrato === 2){
+                `;
+            } else if (idTipoContrato === 2) {
                 sqlQuery = `
                     SELECT * FROM contratoVenda 
-                `  
-            }else{
+                `;
+            } else {
                 return res.status(400).json({ data: "Informações Recebidas Inválidas" });
             }
 
-            resultados = db.query(sqlQuery, [idTipoContrato],
-                function(err, results, fields) {
-                    console.log(err);
-                    return res.status(500).json({ data: "Erro Interno do Servidor" });
+            db.query(sqlQuery, [idTipoContrato],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                        if (resultados === null) {
+                            return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                        } else {
+                            return res.status(200).json({ data: resultados });
+                        }
+                    } else {
+                        return res.status(200).json({ data: "Nenhum Contrato Encontrado" });
+                    }
                 });
-
-            if (resultados === null) {
-                return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
-            } else {
-                return res.status(200).json({ data: resultados });
-            }
-
-        }else{
+        } else {
             return res.status(400).json({ data: "Informações Recebidas Inválidas" });
         }
-    },
+    }
 
     async listarPorCargoDeFuncionario(req, res) {
 
-        if(req.body.idCargo !== null){
-            let cargoId = req.body.idCargo;
+        if (req.body.idCargo !== null) {
+            let idCargo = req.body.idCargo;
+            let resultados = [];
             let sqlQuery;
-            let resultados;
 
-            //Solicitando os dados das tabela de Contrato e Fazendo a União das mesmas
+            idCargo = parseInt(idCargo);
+
             sqlQuery = `
-                (SELECT * FROM contratoAluguel 
+                SELECT * FROM contratoAluguel 
                 INNER JOIN funcionario  on funcionario.id = contratoAluguel.id_funcionario
-                INNER JOIN cargo        on cargo.id = ?)
-                UNION
-                (SELECT * FROM contratoVenda 
-                INNER JOIN funcionario  on funcionario.id = contratoVenda.id_funcionario
-                INNER JOIN cargo        on cargo.id = ?)
+                INNER JOIN cargo        on cargo.id = ?
                 ORDER BY cargo.id ASC
             `;
 
-            resultados = db.query(sqlQuery, [cargoId, cargoId],
-                function(err, results, fields) {
-                    console.log(err);
-                    return res.status(500).json({ data: "Erro Interno do Servidor" });
+            db.query(sqlQuery, [idCargo],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                    }
                 });
 
-            if (resultados === null) {
-                return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
-            } else {
-                return res.status(200).json({ data: resultados });
-            }
+            sqlQuery = `                           
+                SELECT * FROM contratoVenda 
+                INNER JOIN funcionario  on funcionario.id = contratoVenda.id_funcionario
+                INNER JOIN cargo        on cargo.id = ?
+                ORDER BY cargo.id ASC
+            `
 
-        }else{
+            db.query(sqlQuery, [idCargo],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                        // Tratar a ordem por cargo
+                        if (resultados === null) {
+                            return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                        } else {
+                            return res.status(200).json({ data: resultados });
+                        }
+                    } else {
+                        return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                    }
+                });
+        } else {
             return res.status(400).json({ data: "Informações Recebidas Inválidas" });
         }
 
-    },
+    }
 
     async listarPorFuncionario(req, res) {
-        if(req.body.nome !== null){
+        if (req.body.nome !== null) {
             let nome = req.body.nome;
-            let resultados;
+            let resultados = [];
             let sqlQuery;
-            
+
             sqlQuery = `
-                (SELECT * FROM contratoAluguel
-                INNER JOIN funcionario on funcionario.nome = ?)
-                UNION
-                (SELECT * FROM contratoVenda
+                (SELECT contratoAluguel.* FROM contratoAluguel
                 INNER JOIN funcionario on funcionario.nome = ?)
             `
 
-            resultados = db.query(sqlQuery, [nome],
-                function(err, results, fields) {
-                    console.log(err);
-                    return res.status(500).json({ data: "Erro Interno do Servidor" });
+            db.query(sqlQuery, [nome],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                    }
                 });
 
-            if (resultados === null) {
-                return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
-            } else {
-                return res.status(200).json({ data: resultados });
-            }
+            sqlQuery = `
+                (SELECT contratoVenda.* FROM contratoVenda
+                INNER JOIN funcionario on funcionario.nome = ?)
+            `
 
-        }else{
+            db.query(sqlQuery, [nome],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                        if (resultados === null) {
+                            return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                        } else {
+                            return res.status(200).json({ data: resultados });
+                        }
+                    } else {
+                        return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                    }
+                });
+        } else {
             return res.status(400).json({ data: "Informações Recebidas Inválidas" });
         }
-    },
+    }
 }
+
+module.exports = new Contrato;
