@@ -4,7 +4,7 @@ const Update = require('../controllers/updateQueries/index')
 const Funcionario = require('../controllers/writeQueries/createFuncionario')
 const Router = express.Router()
 
-const contratos = require("../controllers/searchQueries/contratos/index");
+const Contrato = require("../controllers/searchQueries/contratos/index");
 
 Router.get('/', (req, res) => res.status(200).json({
     "detail": "Sucess!"
@@ -20,9 +20,9 @@ Router.get('/user', Buscar.listUser)
 Router.put('/user/update', Update.updateUser)
 
 //Rotas de Acesso Privado para Administrador
-Router.get("/contratos", contratos.listarTodosOsContratos);
-Router.get("/contratos/tipoContrato", contratos.listarPorTipoDeContrato);
-Router.get("/contratos/cargoFuncionario", contratos.listarPorCargoDeFuncionario);
-Router.get("/contratos/funcionario", contratos.listarPorFuncionario);
+Router.get("/contratos", Contrato.listarTodosOsContratos);
+Router.post("/contratos/tipoContrato", Contrato.listarPorTipoDeContrato);
+Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario);
+Router.post("/contratos/funcionario", Contrato.listarPorFuncionario);
 
 module.exports = Router;
