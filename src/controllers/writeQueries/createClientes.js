@@ -2,7 +2,7 @@ const db = require('../../dataBase/connect')
 
 class Cliente {
 
-    async createClienteProprietario(req, res) {
+    async createCliente(req, res) {
 
         const { cidade, bairro, rua, numero } = req.body.endereco
 
@@ -50,17 +50,49 @@ class Cliente {
         obterEnderecoId(sql, cidade, bairro, rua, numero)
             .then((endereco_id) => {
                 const { cpf, nome, telefone, email, sexo, estado_civil, profissao } = req.body
+                const rota = req.originalUrl
+                console.log(rota)
+                let sql = ''
+                let selectSql = ''
 
-                const sql = `
-                INSERT INTO clienteProprietario (
-                    cpf, 
-                    nome, 
-                    endereco_id, 
-                    telefone, 
-                    email, 
-                    sexo, 
-                    estado_civil, 
-                    profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+                if (rota.replace(/\//g, '') === "proprietario") {
+                    sql = `
+                    INSERT INTO clienteProprietario (
+                        cpf, 
+                        nome, 
+                        endereco_id, 
+                        telefone, 
+                        email, 
+                        sexo, 
+                        estado_civil, 
+                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
+                    selectSql = `
+                    SELECT c.*, e.cidade, e.bairro, e.rua, e.numero
+                    FROM clienteProprietario c
+                    LEFT JOIN endereco e ON c.endereco_id = e.id
+                    WHERE c.id = ?;
+                    `;
+                }
+                if (rota.replace(/\//g, '') === "cliente") {
+                    sql = `
+                    INSERT INTO clienteUsuario (
+                        cpf, 
+                        nome, 
+                        endereco_id, 
+                        telefone, 
+                        email, 
+                        sexo, 
+                        estado_civil, 
+                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
+                    selectSql = `
+                        SELECT c.*, e.cidade, e.bairro, e.rua, e.numero
+                        FROM clienteUsuario c
+                        LEFT JOIN endereco e ON c.endereco_id = e.id
+                        WHERE c.id = ?;
+                        `;
+                }
 
                 db.query(sql, [cpf, nome, endereco_id, telefone, email, sexo, estado_civil, profissao], (err, result) => {
                     if (err) {
@@ -69,12 +101,7 @@ class Cliente {
 
                     // Consulta para obter os dados do cliente recém-inserido
                     const clienteId = result.insertId;
-                    const selectSql = `
-                    SELECT c.*, e.cidade, e.bairro, e.rua, e.numero
-                    FROM clienteProprietario c
-                    LEFT JOIN endereco e ON c.endereco_id = e.id
-                    WHERE c.id = ?;
-                    `;
+
 
                     db.query(selectSql, [clienteId], (err, cliente) => {
 
@@ -113,6 +140,8 @@ class Cliente {
 
 
     }
+
+
 }
 
 module.exports = new Cliente
