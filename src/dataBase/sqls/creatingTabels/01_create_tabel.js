@@ -19,7 +19,8 @@ db.connect(function (err) {
     if (err) throw err;
 
     var sql = `
-    CREATE TABLE IF NOT EXISTS clienteProprietario (id INT AUTO_INCREMENT PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS clienteProprietario (
+        id INT AUTO_INCREMENT PRIMARY KEY,
         cpf VARCHAR(14) NOT NULL,
         nome VARCHAR(100) NOT NULL,
         endereco_id INT NOT NULL,
