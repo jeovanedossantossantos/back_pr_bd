@@ -41,14 +41,15 @@ db.connect(async function (err) {
 
     try {
         const senha_hash = await bcrypt.hash("senha123", 10);
-        console.log(senha_hash);
+
 
         var sql = `
             INSERT INTO funcionario (
                 nome, 
                 telefone, 
                 cpf, 
-                endereco_id, 
+                endereco_id,
+                data_nasc, 
                 data_ingresso, 
                 email, 
                 usuario, 
@@ -60,7 +61,8 @@ db.connect(async function (err) {
                 'Jeovane', 
                 '123-456-7890', 
                 '123.456.789-01', 
-                1, 
+                1,
+                '1999-10-10', 
                 '2023-10-16', 
                 'email@example.com', 
                 'jeovane', 

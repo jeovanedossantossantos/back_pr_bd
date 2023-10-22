@@ -62,10 +62,11 @@ class Cliente {
                         nome, 
                         endereco_id, 
                         telefone, 
-                        email, 
+                        email,
+                        data_nasc, 
                         sexo, 
                         estado_civil, 
-                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                     selectSql = `
                     SELECT c.*, e.cidade, e.bairro, e.rua, e.numero
@@ -81,10 +82,11 @@ class Cliente {
                         nome, 
                         endereco_id, 
                         telefone, 
-                        email, 
+                        email,
+                        data_nasc, 
                         sexo, 
                         estado_civil, 
-                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+                        profissao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                     selectSql = `
                         SELECT c.*, e.cidade, e.bairro, e.rua, e.numero
@@ -94,7 +96,7 @@ class Cliente {
                         `;
                 }
 
-                db.query(sql, [cpf, nome, endereco_id, telefone, email, sexo, estado_civil, profissao], (err, result) => {
+                db.query(sql, [cpf, nome, endereco_id, telefone, email, data_nasc, sexo, estado_civil, profissao], (err, result) => {
                     if (err) {
                         return res.status(500).json({ message: 'Erro ao inserir o cliente no banco de dados' });
                     }
@@ -115,6 +117,7 @@ class Cliente {
                             nome: cliente[0].nome,
                             telefone: cliente[0].telefone,
                             email: cliente[0].email,
+                            data_nasc: cliente[0].data_nasc,
                             sexo: cliente[0].sexo,
                             estado_civil: cliente[0].estado_civil,
                             profissao: cliente[0].profissao,
