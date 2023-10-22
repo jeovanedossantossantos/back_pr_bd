@@ -5,7 +5,7 @@ class Contrato {
         let resultados = [];
 
         db.query(
-            "SELECT * FROM contratoAluguel"
+            "SELECT ca.id, ca.data_transacao FROM contratoAluguel ca"
             ,
             function (err, results) {
                 if (err) {
@@ -17,7 +17,7 @@ class Contrato {
             });
 
         db.query(
-            "SELECT * FROM contratoVenda"
+            "SELECT cv.id, cv.data_transacao FROM contratoVenda cv"
             ,
             function (err, results) {
                 if (err) {
@@ -46,11 +46,11 @@ class Contrato {
 
             if (idTipoContrato === 1) {
                 sqlQuery = `
-                    SELECT * FROM contratoAluguel 
+                    SELECT ca.id, ca.data_transacao FROM contratoAluguel ca
                 `;
             } else if (idTipoContrato === 2) {
                 sqlQuery = `
-                    SELECT * FROM contratoVenda 
+                    SELECT cv.id, cv.data_transacao FROM contratoVenda cv
                 `;
             } else {
                 return res.status(400).json({ data: "Informações Recebidas Inválidas" });
@@ -87,8 +87,8 @@ class Contrato {
             idCargo = parseInt(idCargo);
 
             sqlQuery = `
-                SELECT * FROM contratoAluguel 
-                INNER JOIN funcionario  on funcionario.id = contratoAluguel.id_funcionario
+                SELECT ca.id, ca.data_transacao FROM contratoAluguel ca
+                INNER JOIN funcionario  on funcionario.id = ca.id_funcionario
                 INNER JOIN cargo        on cargo.id = ?
                 ORDER BY cargo.id ASC
             `;
@@ -104,8 +104,8 @@ class Contrato {
                 });
 
             sqlQuery = `                           
-                SELECT * FROM contratoVenda 
-                INNER JOIN funcionario  on funcionario.id = contratoVenda.id_funcionario
+                SELECT cv.id, cv.data_transacao FROM contratoVenda cv
+                INNER JOIN funcionario  on funcionario.id = cv.id_funcionario
                 INNER JOIN cargo        on cargo.id = ?
                 ORDER BY cargo.id ASC
             `
@@ -140,7 +140,7 @@ class Contrato {
             let sqlQuery;
 
             sqlQuery = `
-                (SELECT contratoAluguel.* FROM contratoAluguel
+                (SELECT ca.id, ca.data_transacao FROM contratoAluguel ca
                 INNER JOIN funcionario on funcionario.nome = ?)
             `
 
@@ -155,7 +155,7 @@ class Contrato {
                 });
 
             sqlQuery = `
-                (SELECT contratoVenda.* FROM contratoVenda
+                (SELECT cv.id, cv.data_transacao FROM contratoVenda cv
                 INNER JOIN funcionario on funcionario.nome = ?)
             `
 
@@ -165,6 +165,108 @@ class Contrato {
                         console.log(err);
                         return res.status(500).json({ data: "Erro Interno do Servidor" });
                     } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                        if (resultados === null) {
+                            return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                        } else {
+                            return res.status(200).json({ data: resultados });
+                        }
+                    } else {
+                        return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                    }
+                });
+        } else {
+            return res.status(400).json({ data: "Informações Recebidas Inválidas" });
+        }
+    }
+
+    async listarPorCliente(req, res) {
+        if (req.body.cpfCliente !== null) {
+            let cpfCliente = req.body.cpfCliente;
+            let resultados = [];
+            let sqlQuery;
+
+            sqlQuery = `
+                SELECT ca.id, ca.data_transacao FROM contratoAluguel ca
+                INNER JOIN imovel i                 on i.id = ca.id_imovel
+                INNER JOIN registroImovel ri        on ri.id_imovel = i.id
+                INNER JOIN clienteProprietario cp   on cp.id = ri.id_clientep
+                WHERE cp.cpf = ?
+            `
+
+            db.query(sqlQuery, [cpfCliente],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                    }
+                });
+
+            sqlQuery = `
+                SELECT cv.id, cv.data_transacao FROM contratoVenda cv
+                INNER JOIN imovel i                 on i.id = cv.id_imovel
+                INNER JOIN registroImovel ri        on ri.id_imovel = i.id
+                INNER JOIN clienteProprietario cp   on cp.id = ri.id_clientep
+                WHERE cp.cpf = ?
+                `
+
+            db.query(sqlQuery, [cpfCliente],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                        if (resultados === null) {
+                            return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                        } else {
+                            return res.status(200).json({ data: resultados });
+                        }
+                    } else {
+                        return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
+                    }
+                });
+        } else {
+            return res.status(400).json({ data: "Informações Recebidas Inválidas" });
+        }
+    }
+
+    async detalharContrato(req, res) {
+        if (req.body.idContrato !== null) {
+            let idContrato = req.body.idContrato;
+            let resultados = [];
+            let sqlQuery;
+
+            idContrato = parseInt(idContrato);
+
+            sqlQuery = `
+                SELECT * FROM contratoAluguel ca
+                WHERE ca.id = ? 
+                `
+
+            db.query(sqlQuery, [idContrato],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {
+                        resultados = resultados.concat(results);
+                    }
+                });
+
+            sqlQuery = `
+                SELECT * FROM contratoVenda cv
+                WHERE cv.id = ? 
+                `
+
+            db.query(sqlQuery, [idContrato],
+                function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ data: "Erro Interno do Servidor" });
+                    } else if (results.length > 0) {    
                         resultados = resultados.concat(results);
                         if (resultados === null) {
                             return res.status(404).json({ data: "Nenhum Contrato Encontrado" });
