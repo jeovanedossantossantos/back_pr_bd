@@ -30,6 +30,8 @@ Router.get("/contratos", Contrato.listarTodosOsContratos);
 Router.post("/contratos/tipoContrato", Contrato.listarPorTipoDeContrato);
 Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario);
 Router.post("/contratos/funcionario", Contrato.listarPorFuncionario);
+Router.post("/contratos/cliente", Contrato.listarPorCliente);
+Router.post("/contratos/detalhar", Contrato.detalharContrato);
+
 
 module.exports = Router;
-
