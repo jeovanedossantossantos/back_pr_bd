@@ -74,7 +74,7 @@ db.connect(function (err) {
     CREATE TABLE IF NOT EXISTS indicador (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255),
-        cpf INT NOT NULL,
+        cpf VARCHAR(14) NOT NULL,
         profissao VARCHAR(255)
     )
         
@@ -176,7 +176,7 @@ db.connect(function (err) {
         id INT AUTO_INCREMENT PRIMARY KEY,
     id_categoria INT NOT NULL,
     data_construcao DATE NOT NULL,
-    fotos VARCHAR(255) NOT NULL,
+    fotos TEXT NOT NULL,
     venda BOOLEAN,
     valor_venda DECIMAL(10, 2),
     locacao BOOLEAN,

@@ -49,7 +49,7 @@ class Cliente {
 
         obterEnderecoId(sql, cidade, bairro, rua, numero)
             .then((endereco_id) => {
-                const { cpf, nome, telefone, email, sexo, estado_civil, profissao } = req.body
+                const { cpf, nome, telefone, email, data_nasc, sexo, estado_civil, profissao } = req.body
                 const rota = req.originalUrl
                 console.log(rota)
                 let sql = ''

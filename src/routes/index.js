@@ -1,20 +1,24 @@
 const express = require('express')
-const Buscar = require('../controllers/searchQueries/index')
+const Imovel = require('../controllers/searchQueries/imovel')
 const Update = require('../controllers/updateQueries/index')
 const Funcionario = require('../controllers/writeQueries/loginFuncionario')
 const Cliente = require('../controllers/writeQueries/createClientes')
 const ListarUsers = require('../controllers/searchQueries/listUsers')
+const ListImovel = require('../controllers/searchQueries/imovel/imovelFilter')
+const FilterImovel = require('../controllers/searchQueries/imovel/imovelFilterDois')
+const Contrato = require("../controllers/searchQueries/contratos/index");
+
 const Router = express.Router()
 
-const Contrato = require("../controllers/searchQueries/contratos/index");
 
 Router.get('/', (req, res) => res.status(200).json({
     "detail": "Sucess!"
 }))
 Router.post('/login', Funcionario.login)
-Router.get('/imovel', Buscar.listImovel)
-Router.get('/imovel/:id', Buscar.indexImovel)
-
+Router.get('/imovel', Imovel.listarTodosImoveis)
+Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
+Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
+Router.get('/imovel/:id_client', FilterImovel.filterImovel)
 
 
 // Roda privada
