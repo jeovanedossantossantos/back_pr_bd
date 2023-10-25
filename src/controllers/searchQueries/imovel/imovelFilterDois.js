@@ -22,7 +22,7 @@ class FilterImovel {
             const sql = `
             
         SELECT
-            c.id AS imovel_id,
+        i.id,
             i.data_construcao,
             i.fotos,
             i.venda,
@@ -38,7 +38,7 @@ class FilterImovel {
             e.numero,
             'Casa' AS tipo_imovel
         FROM Casa c
-        INNER JOIN imovel i ON c.id = i.id
+        INNER JOIN imovel i ON c.id_imovel = i.id
         LEFT JOIN endereco e ON i.id_endereco = e.id
         WHERE i.id IN (
             SELECT ri.id_imovel
@@ -50,7 +50,7 @@ class FilterImovel {
 UNION ALL
 
 SELECT
-    a.id AS imovel_id,
+i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -66,7 +66,7 @@ SELECT
     e.numero,
     'Apartamento' AS tipo_imovel
 FROM Apartamento a
-INNER JOIN imovel i ON a.id = i.id
+INNER JOIN imovel i ON a.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
@@ -78,7 +78,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
 UNION ALL
 
 SELECT
-    s.id AS imovel_id,
+    i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -94,7 +94,7 @@ SELECT
     e.numero,
     'SalaComercial' AS tipo_imovel
 FROM SalaComercial s
-INNER JOIN imovel i ON s.id = i.id
+INNER JOIN imovel i ON s.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
@@ -106,7 +106,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
 UNION ALL
 
 SELECT
-    t.id AS imovel_id,
+    i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -122,7 +122,7 @@ SELECT
     e.numero,
     'Terreno' AS tipo_imovel
 FROM Terreno t
-INNER JOIN imovel i ON t.id = i.id
+INNER JOIN imovel i ON t.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
