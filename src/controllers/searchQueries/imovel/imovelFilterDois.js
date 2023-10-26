@@ -22,7 +22,7 @@ class FilterImovel {
             const sql = `
             
         SELECT
-            c.id AS imovel_id,
+        i.id,
             i.data_construcao,
             i.fotos,
             i.venda,
@@ -33,12 +33,12 @@ class FilterImovel {
             i.id_status,
             e.id AS endereco_id,
             e.cidade,
-            e.bairro,
+            e.bairro,e.estado,
             e.rua,
             e.numero,
             'Casa' AS tipo_imovel
         FROM Casa c
-        INNER JOIN imovel i ON c.id = i.id
+        INNER JOIN imovel i ON c.id_imovel = i.id
         LEFT JOIN endereco e ON i.id_endereco = e.id
         WHERE i.id IN (
             SELECT ri.id_imovel
@@ -50,7 +50,7 @@ class FilterImovel {
 UNION ALL
 
 SELECT
-    a.id AS imovel_id,
+i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -61,12 +61,12 @@ SELECT
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'Apartamento' AS tipo_imovel
 FROM Apartamento a
-INNER JOIN imovel i ON a.id = i.id
+INNER JOIN imovel i ON a.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
@@ -78,7 +78,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
 UNION ALL
 
 SELECT
-    s.id AS imovel_id,
+    i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -89,12 +89,12 @@ SELECT
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'SalaComercial' AS tipo_imovel
 FROM SalaComercial s
-INNER JOIN imovel i ON s.id = i.id
+INNER JOIN imovel i ON s.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
@@ -106,7 +106,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
 UNION ALL
 
 SELECT
-    t.id AS imovel_id,
+    i.id,
     i.data_construcao,
     i.fotos,
     i.venda,
@@ -117,12 +117,12 @@ SELECT
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'Terreno' AS tipo_imovel
 FROM Terreno t
-INNER JOIN imovel i ON t.id = i.id
+INNER JOIN imovel i ON t.id_imovel = i.id
 LEFT JOIN endereco e ON i.id_endereco = e.id
 WHERE i.id IN (
     SELECT ri.id_imovel
@@ -146,6 +146,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
                     const endereco = {
                         cidade: imovel.cidade,
                         bairro: imovel.bairro,
+                        estado: imovel.estado,
                         rua: imovel.rua,
                         numero: imovel.numero
                     };
@@ -153,6 +154,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
                     // Remover campos individuais do objeto imovel
                     delete imovel.cidade;
                     delete imovel.bairro;
+                    delete imovel.estado;
                     delete imovel.rua;
                     delete imovel.numero;
 

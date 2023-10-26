@@ -7,7 +7,7 @@ const ListarUsers = require('../controllers/searchQueries/listUsers')
 const ListImovel = require('../controllers/searchQueries/imovel/imovelFilter')
 const FilterImovel = require('../controllers/searchQueries/imovel/imovelFilterDois')
 const Contrato = require("../controllers/searchQueries/contratos/index");
-
+const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
 const Router = express.Router()
 
 
@@ -16,9 +16,16 @@ Router.get('/', (req, res) => res.status(200).json({
 }))
 Router.post('/login', Funcionario.login)
 Router.get('/imovel', Imovel.listarTodosImoveis)
+Router.get('/imovel/preco', Imovel.listarPorPreco)
+Router.get('/imovel/endereco', Imovel.listarPorEndereco)
 Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
 Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
 Router.get('/imovel/:id_client', FilterImovel.filterImovel)
+Router.get('/funcionario/cargoFuncionario', FuncioarioConsulta.listarFuncionarioCargo)
+Router.get('/funcionario/dataIngressoFuncionario', FuncioarioConsulta.listarFuncionarioDataIngresso)
+Router.get('/funcionario/enderecoFuncionario', FuncioarioConsulta.listarFuncionarioEndereco)
+Router.get('/funcionario/idadeFuncionario', FuncioarioConsulta.listarFuncionarioIdade)
+Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
 
 
 // Roda privada
