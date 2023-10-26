@@ -4,22 +4,22 @@ class Imovel {
     async listarTodosImoveis(req, res) {
 
         db.query(
-            `SELECT i.*, e.cidade, e.bairro, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+            `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
             FROM Casa c
             INNER JOIN imovel i ON c.id_imovel = i.id
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
-            SELECT i.*, e.cidade, e.bairro, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
             FROM Apartamento a
             INNER JOIN imovel i ON a.id_imovel = i.id
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
-            SELECT i.*, e.cidade, e.bairro, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
             FROM SalaComercial s
             INNER JOIN imovel i ON s.id_imovel = i.id
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
-            SELECT i.*, e.cidade, e.bairro, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
             FROM Terreno t
             INNER JOIN imovel i ON t.id_imovel = i.id
             LEFT JOIN endereco e ON i.id_endereco = e.id;
@@ -27,7 +27,7 @@ class Imovel {
 `,
             function (err, results) {
                 if (err) {
-                    console.log(err);
+
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
 
@@ -37,6 +37,7 @@ class Imovel {
                         const endereco = {
                             cidade: imovel.cidade,
                             bairro: imovel.bairro,
+                            estado: imovel.estado,
                             rua: imovel.rua,
                             numero: imovel.numero
                         };
@@ -45,6 +46,7 @@ class Imovel {
                         // Remover campos individuais do objeto imovel
                         delete imovel.cidade;
                         delete imovel.bairro;
+                        delete imovel.estado;
                         delete imovel.rua;
                         delete imovel.numero;
 
@@ -66,20 +68,68 @@ class Imovel {
     }
 
     async listarPorPreco(req, res) {
-        const vmin = req.body.vmin;
-        const vmax = req.body.vmax;
-        let resultados = [];
+        const vmin = req.query.vmin;
+        const vmax = req.query.vmax;
+
+
+        const sql = `
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+            FROM Casa c
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND c.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND c.id_imovel = i.id)
+            LEFT JOIN endereco e ON i.id_endereco = e.id
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+            FROM Apartamento a
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND a.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND a.id_imovel = i.id)
+            LEFT JOIN endereco e ON i.id_endereco = e.id
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+            FROM SalaComercial s
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND s.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND s.id_imovel = i.id)
+            LEFT JOIN endereco e ON i.id_endereco = e.id
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+            FROM Terreno t
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND t.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND t.id_imovel = i.id)
+            LEFT JOIN endereco e ON i.id_endereco = e.id;
+        `
+
+        // "SELECT valor_venda, valor_locacao, id FROM imovel WHERE (valor_venda > ? AND valor_venda < ?) OR (valor_locacao > ? AND valor_locacao < ?)",
 
         db.query(
-            "SELECT valor_venda, valor_locacao, id FROM imovel WHERE (valor_venda > ? AND valor_venda < ?) OR (valor_locacao > ? AND valor_locacao < ?)",
-            [vmin, vmax, vmin, vmax],
+            sql,
+            [vmin, vmax, vmin, vmax, vmin, vmax, vmin, vmax, vmin, vmax, vmin, vmax, vmin, vmax, vmin, vmax],
             function (err, results) {
                 if (err) {
-                    console.log(err);
+
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
-                    resultados = results;
-                    return res.status(200).json({ data: resultados });
+                    const response = results.map(imovel => {
+                        const endereco = {
+                            cidade: imovel.cidade,
+                            bairro: imovel.bairro,
+                            estado: imovel.estado,
+                            rua: imovel.rua,
+                            numero: imovel.numero
+                        };
+
+
+                        // Remover campos individuais do objeto imovel
+                        delete imovel.cidade;
+                        delete imovel.bairro;
+                        delete imovel.estado;
+                        delete imovel.rua;
+                        delete imovel.numero;
+
+                        // Adicionar o objeto de endereço ao imovel
+                        imovel.endereco = endereco;
+                        if (typeof imovel.fotos === 'string') {
+                            imovel.fotos = JSON.parse(imovel.fotos)
+                        }
+                        return imovel
+
+                    })
+                    return res.status(200).json(response);
                 } else {
                     return res.status(404).json({ data: "Nenhum Imóvel Encontrado" });
                 }
@@ -88,36 +138,119 @@ class Imovel {
     }
 
     async listarPorEndereco(req, res) {
-        const cidade = req.body.cidade;
-        const estado = req.body.estado;
-        const rua = req.body.rua;
+        const cidade = req.query.cidade;
+        const estado = req.query.estado;
+        const rua = req.query.rua;
+        console.log(req.query)
+        const gerarVetor = (props) => {
+            const objetoLimpo = Object.keys(props).reduce((acc, chave) => {
+                if (props[chave] !== '') {
+                    acc[chave] = props[chave];
+                }
+                return acc;
+            }, {});
+            const { cidade, estado, rua } = objetoLimpo
+            let vetor = [];
 
+            if (cidade !== undefined && estado !== undefined && rua !== undefined) {
+                vetor.push(cidade, estado, rua, cidade, estado, rua, cidade, estado, rua, cidade, estado, rua);
+            } else if (cidade !== undefined && estado !== undefined) {
+                vetor.push(cidade, estado, cidade, estado, cidade, estado, cidade, estado);
+            } else if (estado !== undefined && rua !== undefined) {
+                vetor.push(estado, rua, estado, rua, estado, rua, estado, rua);
+            } else if (cidade !== undefined && rua !== undefined) {
+                vetor.push(cidade, rua, cidade, rua, cidade, rua, cidade, rua);
+            }
+            else if (cidade !== undefined && estado === undefined && rua === undefined) {
+                vetor.push(cidade, cidade, cidade, cidade);
+            } else if (cidade === undefined && estado !== undefined && rua === undefined) {
+                vetor.push(estado, estado, estado, estado);
+            } else if (cidade === undefined && estado === undefined && rua !== undefined) {
+                vetor.push(rua, rua, rua, rua);
+            }
+
+            return vetor;
+        }
         if (cidade || estado || rua) {
             let conditions = [];
-            let values = [];
+            let values = gerarVetor(req.query);
 
             if (cidade) {
                 conditions.push("e.cidade = ?");
-                values.push(cidade);
+                // values.push(cidade);
+
             }
             if (estado) {
                 conditions.push("e.estado = ?");
-                values.push(estado);
+                // values.push(estado);
+
+
             }
             if (rua) {
                 conditions.push("e.rua = ?");
-                values.push(rua);
+                // values.push(rua);
+
             }
 
             const whereClause = conditions.join(" AND ");
-            const query = `SELECT * FROM imovel i INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause}`;
+            const query = `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+            FROM Casa c
+            INNER JOIN imovel i ON c.id_imovel = i.id
+            INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause}
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+            FROM Apartamento a
+            INNER JOIN imovel i ON a.id_imovel = i.id
+            INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause}
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+            FROM SalaComercial s
+            INNER JOIN imovel i ON s.id_imovel = i.id
+            INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause}
+            UNION ALL
+            SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+            FROM Terreno t
+            INNER JOIN imovel i ON t.id_imovel = i.id
+            INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause};
+            
+`
+
+
+            // `SELECT * 
+            // FROM imovel 
+            // i INNER JOIN endereco e ON i.id_endereco = e.id WHERE ${whereClause}`;
 
             db.query(query, values, function (err, results) {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
-                    return res.status(200).json({ data: results });
+                    const response = results.map(imovel => {
+                        const endereco = {
+                            cidade: imovel.cidade,
+                            bairro: imovel.bairro,
+                            estado: imovel.estado,
+                            rua: imovel.rua,
+                            numero: imovel.numero
+                        };
+
+
+                        // Remover campos individuais do objeto imovel
+                        delete imovel.cidade;
+                        delete imovel.bairro;
+                        delete imovel.estado
+                        delete imovel.rua;
+                        delete imovel.numero;
+
+                        // Adicionar o objeto de endereço ao imovel
+                        imovel.endereco = endereco;
+                        if (typeof imovel.fotos === 'string') {
+                            imovel.fotos = JSON.parse(imovel.fotos)
+                        }
+                        return imovel
+
+                    })
+                    return res.status(200).json(response);
                 } else {
                     return res.status(404).json({ data: "Nenhum Imóvel Encontrado com o endereço especificado" });
                 }

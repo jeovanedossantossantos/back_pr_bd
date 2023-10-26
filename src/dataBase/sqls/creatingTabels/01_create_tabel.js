@@ -407,3 +407,17 @@ db.connect(function (err) {
     });
 });
 
+
+// ALTER TABLE nome_tabela ADD estado VARCHAR(50);
+
+// Tabela endereço
+db.connect(function (err) {
+    if (err) throw err;
+
+    var sql = "ALTER TABLE endereco ADD estado VARCHAR(50) NOT NULL;";
+    db.query(sql, function (err, result) {
+        if (err) return err;
+        console.log("Table endereco created");
+        return
+    });
+});

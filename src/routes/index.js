@@ -16,6 +16,8 @@ Router.get('/', (req, res) => res.status(200).json({
 }))
 Router.post('/login', Funcionario.login)
 Router.get('/imovel', Imovel.listarTodosImoveis)
+Router.get('/imovel/preco', Imovel.listarPorPreco)
+Router.get('/imovel/endereco', Imovel.listarPorEndereco)
 Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
 Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
 Router.get('/imovel/:id_client', FilterImovel.filterImovel)
