@@ -68,39 +68,57 @@ class Funcionario {
         }
     }
     
-    
     async listarFuncionarioEndereco(req, res) {
-        // /funcionaraio?cidade=Cruz da Almas&rua=tabela&bairro=centro&numero=10
-        const {cidade, rua, bairro, numero} = req.query
-        if (cidade !== undefined && bairro !== undefined && rua !== undefined && numero !== undefined) {
-            // let cidade = req.body.cidade;
-            // let bairro = req.body.bairro;
-            // let rua = req.body.rua;
-            // let numero = req.body.numero;
-            
+        const { cidade, bairro, rua, numero } = req.body;
+        const conditions = [];
+        const params = [];
     
-            db.query(
-                "SELECT f.* FROM funcionario AS f " +
-                "JOIN endereco AS e ON f.endereco_id = e.id " +
-                "WHERE e.cidade = ? AND e.bairro = ? AND e.rua = ? AND e.numero = ?",
-                [cidade, bairro, rua, numero],
-                function (err, results) {
-                    if (err) {
-                        console.log(err);
-                        res.status(500).json({ data: "Erro Interno do Servidor" });
-                    } else {
-                        if (results.length > 0) {
-                            res.status(200).json({ data: results });
-                        } else {
-                            res.status(404).json({ data: "Nenhum Funcionário Encontrado com esse endereço" });
-                        }
-                    }
-                }
-            );
-        } else {
-            return res.status(400).json({ data: "Informações Recebidas Inválidas" });
+        if (cidade) {
+            conditions.push("e.cidade = ?");
+            params.push(cidade);
         }
+    
+        if (bairro) {
+            conditions.push("e.bairro = ?");
+            params.push(bairro);
+        }
+    
+        if (rua) {
+            conditions.push("e.rua = ?");
+            params.push(rua);
+        }
+    
+        if (numero) {
+            conditions.push("e.numero = ?");
+            params.push(numero);
+        }
+    
+        if (conditions.length === 0) {
+            return res.status(400).json({ data: "Nenhuma informação de endereço fornecida" });
+        }
+    
+        const whereClause = conditions.join(" OR ");
+        const sqlQuery = `
+            SELECT f.*
+            FROM funcionario AS f
+            JOIN endereco AS e ON f.endereco_id = e.id
+            WHERE ${whereClause}
+        `;
+    
+        db.query(sqlQuery, params, function (err, results) {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ data: "Erro Interno do Servidor" });
+            } else {
+                if (results.length > 0) {
+                    res.status(200).json({ data: results });
+                } else {
+                    res.status(404).json({ data: "Nenhum Funcionário Encontrado com essas informações de endereço" });
+                }
+            }
+        });
     }
+    
     
     async listarFuncionarioCargo(req, res) {
 
