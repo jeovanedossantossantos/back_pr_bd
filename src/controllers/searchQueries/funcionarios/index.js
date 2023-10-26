@@ -69,7 +69,8 @@ class Funcionario {
     }
     
     async listarFuncionarioEndereco(req, res) {
-        const { cidade, bairro, rua, numero } = req.body;
+        const { cidade, bairro, rua, numero } = req.query; // Use req.query para parâmetros na URL.
+    
         const conditions = [];
         const params = [];
     
