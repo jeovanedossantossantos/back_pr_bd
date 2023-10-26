@@ -8,6 +8,7 @@ const ListImovel = require('../controllers/searchQueries/imovel/imovelFilter')
 const FilterImovel = require('../controllers/searchQueries/imovel/imovelFilterDois')
 const Contrato = require("../controllers/searchQueries/contratos/index");
 const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
+const FuncionarioCreate = require('../controllers/writeQueries/createFuncionario')
 const Router = express.Router()
 
 
@@ -41,6 +42,7 @@ Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario)
 Router.post("/contratos/funcionario", Contrato.listarPorFuncionario);
 Router.post("/contratos/cliente", Contrato.listarPorCliente);
 Router.post("/contratos/detalhar", Contrato.detalharContrato);
+Router.post("/funcionario/create", FuncionarioCreate.createFuncionario);
 
 
 module.exports = Router;

@@ -1,6 +1,6 @@
-const db = require('../../database/connect');
+const db = require('../../dataBase/connect');
 
-class Funcionario {
+class FuncionarioCreate {
   async createFuncionario(req, res) {
     const { nome, cpf, email, senha, sexo, estado_civil, data_ingresso, telefone, id_endereco, id_cargo } = req.body;
 
@@ -86,4 +86,4 @@ class Funcionario {
   }
 }
 
-module.exports = new Funcionario();
+module.exports = new FuncionarioCreate
