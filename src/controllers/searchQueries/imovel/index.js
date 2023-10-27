@@ -282,20 +282,63 @@ class Imovel {
     }
 
     async listarParaVenda(req, res) {
-        const venda = req.body.venda;
-        const disponivel = req.body.disponivel;
+        // const venda = req.body.venda;
+        // const disponivel = req.body.disponivel;
         let resultados = [];
 
+        const sql = `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+        FROM Casa c
+        INNER JOIN imovel i ON c.id_imovel = i.id AND i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+        FROM Apartamento a
+        INNER JOIN imovel i ON a.id_imovel = i.id AND i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+        FROM SalaComercial s
+        INNER JOIN imovel i ON s.id_imovel = i.id AND i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+        FROM Terreno t
+        INNER JOIN imovel i ON t.id_imovel = i.id AND i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id;`
+        // "SELECT * FROM imovel WHERE venda = ? AND disponivel = ?"
         db.query(
-            "SELECT * FROM imovel WHERE venda = ? AND disponivel = ?",
-            [venda, disponivel],
+            sql,
             function (err, results) {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
-                    resultados = results;
-                    return res.status(200).json({ data: resultados });
+                    const response = results.map(imovel => {
+                        const endereco = {
+                            cidade: imovel.cidade,
+                            bairro: imovel.bairro,
+                            estado: imovel.estado,
+                            rua: imovel.rua,
+                            numero: imovel.numero
+                        };
+
+
+                        // Remover campos individuais do objeto imovel
+                        delete imovel.cidade;
+                        delete imovel.bairro;
+                        delete imovel.estado
+                        delete imovel.rua;
+                        delete imovel.numero;
+
+                        // Adicionar o objeto de endereço ao imovel
+                        imovel.endereco = endereco;
+                        if (typeof imovel.fotos === 'string') {
+                            imovel.fotos = JSON.parse(imovel.fotos)
+                        }
+                        return imovel
+
+                    })
+                    return res.status(200).json(response);
                 } else {
                     return res.status(404).json({ data: "Nenhum Imóvel Disponível para Venda Encontrado" });
                 }
@@ -304,19 +347,124 @@ class Imovel {
     }
 
     async listarParaLocacao(req, res) {
-        let resultados = [];
 
+        const sql = `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+        FROM Casa c
+        INNER JOIN imovel i ON c.id_imovel = i.id AND i.locacao = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+        FROM Apartamento a
+        INNER JOIN imovel i ON a.id_imovel = i.id AND i.locacao = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+        FROM SalaComercial s
+        INNER JOIN imovel i ON s.id_imovel = i.id AND i.locacao = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+        FROM Terreno t
+        INNER JOIN imovel i ON t.id_imovel = i.id AND i.locacao = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id;`
+        // "SELECT * FROM imovel WHERE venda = ? AND disponivel = ?"
         db.query(
-            "SELECT * FROM imovel WHERE locacao = 1 AND disponivel = 1",
+            sql,
             function (err, results) {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
-                    resultados = results;
-                    return res.status(200).json({ data: resultados });
+                    const response = results.map(imovel => {
+                        const endereco = {
+                            cidade: imovel.cidade,
+                            bairro: imovel.bairro,
+                            estado: imovel.estado,
+                            rua: imovel.rua,
+                            numero: imovel.numero
+                        };
+
+
+                        // Remover campos individuais do objeto imovel
+                        delete imovel.cidade;
+                        delete imovel.bairro;
+                        delete imovel.estado
+                        delete imovel.rua;
+                        delete imovel.numero;
+
+                        // Adicionar o objeto de endereço ao imovel
+                        imovel.endereco = endereco;
+                        if (typeof imovel.fotos === 'string') {
+                            imovel.fotos = JSON.parse(imovel.fotos)
+                        }
+                        return imovel
+
+                    })
+                    return res.status(200).json(response);
                 } else {
-                    return res.status(404).json({ data: "Nenhum Imóvel Disponível para Locação Encontrado" });
+                    return res.status(404).json({ data: "Nenhum Imóvel Disponível para Venda Encontrado" });
+                }
+            }
+        );
+    }
+
+    async listarParaVendaELocacao(req, res) {
+
+        const sql = `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
+        FROM Casa c
+        INNER JOIN imovel i ON c.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
+        FROM Apartamento a
+        INNER JOIN imovel i ON a.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
+        FROM SalaComercial s
+        INNER JOIN imovel i ON s.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id
+        UNION ALL
+        SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
+        FROM Terreno t
+        INNER JOIN imovel i ON t.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        LEFT JOIN endereco e ON i.id_endereco = e.id;`
+        // "SELECT * FROM imovel WHERE venda = ? AND disponivel = ?"
+        db.query(
+            sql,
+            function (err, results) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ data: "Erro Interno do Servidor" });
+                } else if (results.length > 0) {
+                    const response = results.map(imovel => {
+                        const endereco = {
+                            cidade: imovel.cidade,
+                            bairro: imovel.bairro,
+                            estado: imovel.estado,
+                            rua: imovel.rua,
+                            numero: imovel.numero
+                        };
+
+
+                        // Remover campos individuais do objeto imovel
+                        delete imovel.cidade;
+                        delete imovel.bairro;
+                        delete imovel.estado
+                        delete imovel.rua;
+                        delete imovel.numero;
+
+                        // Adicionar o objeto de endereço ao imovel
+                        imovel.endereco = endereco;
+                        if (typeof imovel.fotos === 'string') {
+                            imovel.fotos = JSON.parse(imovel.fotos)
+                        }
+                        return imovel
+
+                    })
+                    return res.status(200).json(response);
+                } else {
+                    return res.status(404).json({ data: "Nenhum Imóvel Disponível para Venda Encontrado" });
                 }
             }
         );
