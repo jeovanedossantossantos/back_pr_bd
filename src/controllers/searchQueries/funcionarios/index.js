@@ -173,5 +173,29 @@ class Funcionario {
             return res.status(400).json({ data: "Informações Recebidas Inválidas" });
         }
     }
+
+    async detalharFuncionarioPorCPF(req, res) {
+        const {cpfFuncionario} = req.query // Use req.params para obter o CPF da URL.
+    ;
+        if (cpfFuncionario !== undefined) {
+            return res.status(400).json({ data: "CPF do funcionário não fornecido" });
+        }
+    
+        const sqlQuery = "SELECT * FROM funcionario WHERE cpf = ?";
+    
+        db.query(sqlQuery, [cpfFuncionario], function (err, results) {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ data: "Erro Interno do Servidor" });
+            } else {
+                if (results.length > 0) {
+                    res.status(200).json({ data: results[0] }); // Assumindo que o CPF é único, retornamos apenas o primeiro resultado.
+                } else {
+                    res.status(404).json({ data: "Funcionário não encontrado com o CPF fornecido" });
+                }
+            }
+        });
+    }
+    
 }
 module.exports = new Funcionario;
