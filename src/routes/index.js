@@ -10,6 +10,10 @@ const Contrato = require("../controllers/searchQueries/contratos/index");
 const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
 const FuncionarioDelete = require('../controllers/deleteQueries/funcionario/deleteFuncionario')
 const FuncionarioCreate = require('../controllers/writeQueries/createFuncionario')
+const PagamentoCreate = require('../controllers/writeQueries/pagamento/createPagamento')
+const PagamentoUpdate = require('../controllers/updateQueries/pagamento/updatePagamento')
+const PagamentoDelete = require('../controllers/deleteQueries/pagamento/deletePagamento')
+const PagamentoSearch = require('../controllers/searchQueries/pagamento/index')
 const Router = express.Router()
 
 
@@ -36,6 +40,12 @@ Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
 Router.get('funcionario/nome', FuncioarioConsulta.detalharFuncionarioPorNome)
 Router.post('/funcionario/create', FuncionarioCreate.criarFuncionario)
 Router.delete('/funcuinario/delete', FuncionarioDelete.excluirFuncionario)
+
+//rotas para Forma de Pagamento
+Router.post('/pagamento/create', PagamentoCreate.criarFormaPagamento)
+Router.delete('/pagamento/delete', PagamentoDelete.deletarPagamento)
+Router.put('/pagamento/update', PagamentoUpdate.atualizarFormaPagamento)
+Router.get('/pagamento', PagamentoSearch.listarPagamento)
 
 //Rotas de Acesso Privado para Administrador
 Router.get('/user', ListarUsers.listUsers)
