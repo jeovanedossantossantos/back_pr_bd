@@ -169,5 +169,29 @@ class Funcionario {
             return res.status(400).json({ data: "Informações Recebidas Inválidas" });
         }
     }
+
+    async detalharFuncionarioPorNome(req, res) {
+        const nomeFuncionario = req.params.nome; // Use req.params para obter o nome da URL.
+    
+        if (!nomeFuncionario) {
+            return res.status(400).json({ data: "Nome do funcionário não fornecido" });
+        }
+    
+        const sqlQuery = "SELECT * FROM funcionario WHERE nome = ?";
+    
+        db.query(sqlQuery, [nomeFuncionario], function (err, results) {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ data: "Erro Interno do Servidor" });
+            } else {
+                if (results.length > 0) {
+                    res.status(200).json({ data: results[0] }); // Assumindo que o nome é único, retornamos apenas o primeiro resultado.
+                } else {
+                    res.status(404).json({ data: "Funcionário não encontrado com o nome fornecido" });
+                }
+            }
+        });
+    }
+    
 }
 module.exports = new Funcionario;

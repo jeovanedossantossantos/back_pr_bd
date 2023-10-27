@@ -33,6 +33,7 @@ Router.get('/funcionario/dataIngressoFuncionario', FuncioarioConsulta.listarFunc
 Router.get('/funcionario/enderecoFuncionario', FuncioarioConsulta.listarFuncionarioEndereco)
 Router.get('/funcionario/idadeFuncionario', FuncioarioConsulta.listarFuncionarioIdade)
 Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
+Router.get('funcionario/nome', FuncioarioConsulta.detalharFuncionarioPorNome)
 Router.post('/funcionario/create', FuncionarioCreate.criarFuncionario)
 Router.delete('/funcuinario/delete', FuncionarioDelete.excluirFuncionario)
 
