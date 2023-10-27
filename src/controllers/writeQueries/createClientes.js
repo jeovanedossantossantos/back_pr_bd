@@ -4,7 +4,7 @@ class Cliente {
 
     async createCliente(req, res) {
 
-        const { cidade, bairro, rua, numero } = req.body.endereco
+        const { cidade, bairro, rua, numero, estado } = req.body.endereco
 
         // Verifica se o enderço já existe
         const sql = `
@@ -12,15 +12,16 @@ class Cliente {
             WHERE cidade = ? 
             AND bairro = ? 
             AND rua = ? 
-            AND numero = ?;
+            AND numero = ?
+            AND estado= ?;
         `;
 
-        if (!cidade || !bairro || !rua || !numero) {
+        if (!cidade || !bairro || !rua || !numero || !estado) {
             return res.status(400).json({ message: "Campos obrigatórios não informados!" });
         }
-        const obterEnderecoId = (sql, cidade, bairro, rua, numero) => {
+        const obterEnderecoId = (sql, cidade, bairro, rua, numero, estado) => {
             return new Promise((resolve, reject) => {
-                db.query(sql, [cidade, bairro, rua, numero], (err, result) => {
+                db.query(sql, [cidade, bairro, rua, numero, estado], (err, result) => {
                     if (err) {
                         reject(err);
                     }
@@ -30,11 +31,11 @@ class Cliente {
                     } else {
                         // Endereço não encontrado, insira um novo endereço
                         const insertSQL = `
-                            INSERT INTO endereco (cidade, bairro, rua, numero)
-                            VALUES (?, ?, ?, ?);
+                            INSERT INTO endereco (cidade, bairro, rua, numero,estado)
+                            VALUES (?, ?, ?, ?, ?);
                         `;
 
-                        db.query(insertSQL, [cidade, bairro, rua, numero], (err, insertResult) => {
+                        db.query(insertSQL, [cidade, bairro, rua, numero, estado], (err, insertResult) => {
                             if (err) {
                                 reject("Erro na inserção do novo endereço.");
                             } else {
@@ -47,7 +48,7 @@ class Cliente {
             });
         };
 
-        obterEnderecoId(sql, cidade, bairro, rua, numero)
+        obterEnderecoId(sql, cidade, bairro, rua, numero, estado)
             .then((endereco_id) => {
                 const { cpf, nome, telefone, email, data_nasc, sexo, estado_civil, profissao } = req.body
                 const rota = req.originalUrl

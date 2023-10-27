@@ -13,6 +13,10 @@ const Contrato = require("../controllers/searchQueries/contratos/index");
 const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
 const FuncionarioDelete = require('../controllers/deleteQueries/funcionario/deleteFuncionario')
 const FuncionarioCreate = require('../controllers/writeQueries/createFuncionario')
+const PagamentoCreate = require('../controllers/writeQueries/pagamento/createPagamento')
+const PagamentoUpdate = require('../controllers/updateQueries/pagamento/updatePagamento')
+const PagamentoDelete = require('../controllers/deleteQueries/pagamento/deletePagamento')
+const PagamentoSearch = require('../controllers/searchQueries/pagamento/index')
 const Router = express.Router()
 
 
@@ -25,7 +29,7 @@ Router.get('/imovel/preco', Imovel.listarPorPreco)
 Router.get('/imovel/endereco', Imovel.listarPorEndereco)
 Router.get('/imovel/vender', Imovel.listarParaVenda)
 Router.get('/imovel/locacao', Imovel.listarParaLocacao)
-Router.get('/imovel/veder_locacao', Imovel.listarParaLocacao)
+Router.get('/imovel/veder_locacao', Imovel.listarParaVendaELocacao)
 Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
 Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
 Router.get('/imovel/:id_client', FilterImovel.filterImovel)
@@ -36,9 +40,15 @@ Router.get('/funcionario/dataIngressoFuncionario', FuncioarioConsulta.listarFunc
 Router.get('/funcionario/enderecoFuncionario', FuncioarioConsulta.listarFuncionarioEndereco)
 Router.get('/funcionario/idadeFuncionario', FuncioarioConsulta.listarFuncionarioIdade)
 Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
-Router.get('funcionario/nome', FuncioarioConsulta.detalharFuncionarioPorNome)
+Router.get('funcionario/cpf/:cpf', FuncioarioConsulta.detalharFuncionarioPorCPF)
 Router.post('/funcionario/create', FuncionarioCreate.criarFuncionario)
 Router.delete('/funcuinario/delete', FuncionarioDelete.excluirFuncionario)
+
+//rotas para Forma de Pagamento
+Router.post('/pagamento/create', PagamentoCreate.criarFormaPagamento)
+Router.delete('/pagamento/delete', PagamentoDelete.deletarPagamento)
+Router.put('/pagamento/update', PagamentoUpdate.atualizarFormaPagamento)
+Router.get('/pagamento', PagamentoSearch.listarPagamento)
 
 //Rotas de Acesso Privado para Administrador
 Router.get('/user', ListarUsers.listUsers)
