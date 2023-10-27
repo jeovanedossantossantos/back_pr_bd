@@ -57,7 +57,10 @@ Router.put('/user/update', Update.updateUser)
 Router.post('/proprietario', Cliente.createCliente)
 Router.post('/cliente', Cliente.createCliente)
 
-Router.post('/imovel', CriarImovel.meuSuperimoveldacasapropria)
+Router.post('/imovel', CriarImovel.createImovel)
+Router.post('/casa', CriarImovel.createImovel)
+Router.post('/apartamento', CriarImovel.createImovel)
+Router.post('/sala', CriarImovel.createImovel)
 Router.delete('/imovel/delete', ImovelDelete.deleteImovel)
 Router.put('/imovel/update', ImovelUpdate.atualizarImovel)
 
