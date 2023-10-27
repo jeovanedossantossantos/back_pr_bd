@@ -28,4 +28,4 @@ class FuncionarioDelete {
   }
 }
 
-module.exports = new FuncionarioDelete();
+module.exports = new FuncionarioDelete;

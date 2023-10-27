@@ -8,7 +8,8 @@ const ListImovel = require('../controllers/searchQueries/imovel/imovelFilter')
 const FilterImovel = require('../controllers/searchQueries/imovel/imovelFilterDois')
 const Contrato = require("../controllers/searchQueries/contratos/index");
 const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
-const FuncionarioDelete = require('../controllers/deleteQueries/funcionario')
+const FuncionarioDelete = require('../controllers/deleteQueries/funcionario/deleteFuncionario')
+const FuncionarioCreate = require('../controllers/writeQueries/createFuncionario')
 const Router = express.Router()
 
 
@@ -32,7 +33,8 @@ Router.get('/funcionario/dataIngressoFuncionario', FuncioarioConsulta.listarFunc
 Router.get('/funcionario/enderecoFuncionario', FuncioarioConsulta.listarFuncionarioEndereco)
 Router.get('/funcionario/idadeFuncionario', FuncioarioConsulta.listarFuncionarioIdade)
 Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
-
+Router.post('/funcionario/create', FuncionarioCreate.criarFuncionario)
+Router.delete('/funcuinario/delete', FuncionarioDelete.excluirFuncionario)
 
 //Rotas de Acesso Privado para Administrador
 Router.get('/user', ListarUsers.listUsers)
