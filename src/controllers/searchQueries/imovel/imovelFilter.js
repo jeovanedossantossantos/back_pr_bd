@@ -27,7 +27,7 @@ class ListImovel {
         i.id_status,
         e.id AS endereco_id,
         e.cidade,
-        e.bairro,
+        e.bairro,e.estado,
         e.rua,
         e.numero,
         'Casa' AS tipo_imovel
@@ -52,7 +52,7 @@ class ListImovel {
         i.id_status,
         e.id AS endereco_id,
         e.cidade,
-        e.bairro,
+        e.bairro,e.estado,
         e.rua,
         e.numero,
         'Apartamento' AS tipo_imovel
@@ -77,7 +77,7 @@ class ListImovel {
         i.id_status,
         e.id AS endereco_id,
         e.cidade,
-        e.bairro,
+        e.bairro,e.estado,
         e.rua,
         e.numero,
         'Sala Comercial' AS tipo_imovel
@@ -102,7 +102,7 @@ class ListImovel {
         i.id_status,
         e.id AS endereco_id,
         e.cidade,
-        e.bairro,
+        e.bairro,e.estado,
         e.rua,
         e.numero,
         'Terreno' AS tipo_imovel
@@ -130,6 +130,7 @@ class ListImovel {
                     const endereco = {
                         cidade: imovel.cidade,
                         bairro: imovel.bairro,
+                        estado: imovel.estado,
                         rua: imovel.rua,
                         numero: imovel.numero
                     };
@@ -137,6 +138,7 @@ class ListImovel {
                     // Remover campos individuais do objeto imovel
                     delete imovel.cidade;
                     delete imovel.bairro;
+                    delete imovel.estado;
                     delete imovel.rua;
                     delete imovel.numero;
 

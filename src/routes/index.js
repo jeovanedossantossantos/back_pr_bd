@@ -17,6 +17,11 @@ Router.get('/', (req, res) => res.status(200).json({
 }))
 Router.post('/login', Funcionario.login)
 Router.get('/imovel', Imovel.listarTodosImoveis)
+Router.get('/imovel/preco', Imovel.listarPorPreco)
+Router.get('/imovel/endereco', Imovel.listarPorEndereco)
+Router.get('/imovel/vender', Imovel.listarParaVenda)
+Router.get('/imovel/locacao', Imovel.listarParaLocacao)
+Router.get('/imovel/veder_locacao', Imovel.listarParaLocacao)
 Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
 Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
 Router.get('/imovel/:id_client', FilterImovel.filterImovel)
@@ -27,7 +32,7 @@ Router.get('/funcionario/idadeFuncionario', FuncioarioConsulta.listarFuncionario
 Router.get('/funcionario', FuncioarioConsulta.listarTodosFuncionarios)
 
 
-// Roda privada
+//Rotas de Acesso Privado para Administrador
 Router.get('/user', ListarUsers.listUsers)
 Router.put('/user/update', Update.updateUser)
 
@@ -35,7 +40,7 @@ Router.post('/proprietario', Cliente.createCliente)
 Router.post('/cliente', Cliente.createCliente)
 
 
-//Rotas de Acesso Privado para Administrador
+
 Router.get("/contratos", Contrato.listarTodosOsContratos);
 Router.post("/contratos/tipoContrato", Contrato.listarPorTipoDeContrato);
 Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario);

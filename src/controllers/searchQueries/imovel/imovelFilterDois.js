@@ -33,7 +33,7 @@ class FilterImovel {
             i.id_status,
             e.id AS endereco_id,
             e.cidade,
-            e.bairro,
+            e.bairro,e.estado,
             e.rua,
             e.numero,
             'Casa' AS tipo_imovel
@@ -61,7 +61,7 @@ i.id,
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'Apartamento' AS tipo_imovel
@@ -89,7 +89,7 @@ SELECT
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'SalaComercial' AS tipo_imovel
@@ -117,7 +117,7 @@ SELECT
     i.id_status,
     e.id AS endereco_id,
     e.cidade,
-    e.bairro,
+    e.bairro,e.estado,
     e.rua,
     e.numero,
     'Terreno' AS tipo_imovel
@@ -146,6 +146,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
                     const endereco = {
                         cidade: imovel.cidade,
                         bairro: imovel.bairro,
+                        estado: imovel.estado,
                         rua: imovel.rua,
                         numero: imovel.numero
                     };
@@ -153,6 +154,7 @@ ${conditions.length ? `AND (${conditions.join(' OR ')})` : ''}
                     // Remover campos individuais do objeto imovel
                     delete imovel.cidade;
                     delete imovel.bairro;
+                    delete imovel.estado;
                     delete imovel.rua;
                     delete imovel.numero;
 
