@@ -8,7 +8,7 @@ const ListImovel = require('../controllers/searchQueries/imovel/imovelFilter')
 const FilterImovel = require('../controllers/searchQueries/imovel/imovelFilterDois')
 const Contrato = require("../controllers/searchQueries/contratos/index");
 const FuncioarioConsulta = require('../controllers/searchQueries/funcionarios')
-const FuncionarioCreate = require('../controllers/writeQueries/createFuncionario')
+const FuncionarioDelete = require('../controllers/deleteQueries/funcionario')
 const Router = express.Router()
 
 
@@ -25,6 +25,8 @@ Router.get('/imovel/veder_locacao', Imovel.listarParaLocacao)
 Router.get('/imovel/proprietario/:id_client', ListImovel.listImovel)
 Router.get('/imovel/cliente/:id_client', ListImovel.listaImovelClienteUser)
 Router.get('/imovel/:id_client', FilterImovel.filterImovel)
+
+//rotas para funcionario
 Router.get('/funcionario/cargoFuncionario', FuncioarioConsulta.listarFuncionarioCargo)
 Router.get('/funcionario/dataIngressoFuncionario', FuncioarioConsulta.listarFuncionarioDataIngresso)
 Router.get('/funcionario/enderecoFuncionario', FuncioarioConsulta.listarFuncionarioEndereco)
@@ -47,7 +49,6 @@ Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario)
 Router.post("/contratos/funcionario", Contrato.listarPorFuncionario);
 Router.post("/contratos/cliente", Contrato.listarPorCliente);
 Router.post("/contratos/detalhar", Contrato.detalharContrato);
-Router.post("/funcionario/create", FuncionarioCreate.createFuncionario);
 
 
 module.exports = Router;

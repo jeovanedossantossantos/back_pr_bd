@@ -1,8 +1,8 @@
 const db = require('../../dataBase/connect');
 
 class FuncionarioCreate {
-  async createFuncionario(req, res) {
-    const { nome, cpf, email, senha, sexo, estado_civil, data_ingresso, telefone, id_endereco, id_cargo } = req.body;
+  async criarFuncionario(req, res) {
+    const { nome, cpf, email, senha, estado_civil, data_ingresso, telefone, id_endereco, id_cargo, data_nasc } = req.body;
 
     // Verifica se o endereço existe
     const enderecoSql = `
@@ -33,10 +33,10 @@ class FuncionarioCreate {
         // Insere o funcionário
         const sql = `
           INSERT INTO funcionario (
-            nome, cpf, email, senha, sexo, estado_civil, data_ingresso, telefone, id_endereco, id_cargo
+            nome, cpf, email, senha, estado_civil, data_ingresso, telefone, id_endereco, id_cargo, data_nasc
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
-        db.query(sql, [nome, cpf, email, senha, sexo, estado_civil, data_ingresso, telefone, id_endereco, id_cargo], (err, result) => {
+        db.query(sql, [nome, cpf, email, senha, estado_civil, data_ingresso, telefone, id_endereco, id_cargo, data_nasc], (err, result) => {
           if (err) {
             return res.status(500).json({ message: 'Erro ao inserir o funcionário no banco de dados' });
           }
@@ -55,16 +55,16 @@ class FuncionarioCreate {
               return res.status(500).json({ message: 'Erro ao obter os dados do funcionário' });
             }
 
-            const funcionarioData = {
+            const dadosFuncionario = {
               id: funcionario[0].id,
               nome: funcionario[0].nome,
               cpf: funcionario[0].cpf,
               email: funcionario[0].email,
               senha: funcionario[0].senha,
-              sexo: funcionario[0].sexo,
               estado_civil: funcionario[0].estado_civil,
               data_ingresso: funcionario[0].data_ingresso,
               telefone: funcionario[0].telefone,
+              data_nasc: funcionario[0].data_nasc, // Adicionando a data de nascimento
               endereco: {
                 id: funcionario[0].id_endereco,
                 cidade: funcionario[0].cidade,
@@ -78,7 +78,7 @@ class FuncionarioCreate {
               },
             };
 
-            return res.status(201).json({ message: 'Funcionário cadastrado com sucesso', funcionario: funcionarioData });
+            return res.status(201).json({ message: 'Funcionário cadastrado com sucesso', funcionario: dadosFuncionario });
           });
         });
       });
@@ -86,4 +86,4 @@ class FuncionarioCreate {
   }
 }
 
-module.exports = new FuncionarioCreate
+module.exports = new FuncionarioCreate();
