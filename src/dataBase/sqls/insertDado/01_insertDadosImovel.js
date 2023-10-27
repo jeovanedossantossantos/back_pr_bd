@@ -84,9 +84,8 @@ const db = require('../../connect')
 // });
 
 const imovel_1 = JSON.stringify([
-    "https://www.wkoerichimoveis.com.br/wp-content/uploads/2020/02/capa-967x800.jpg",
-    "https://blog.kondorimoveis.com.br/wp-content/uploads/2014/11/ianageimo7502_128656.jpg",
-    "https://blog.charmedodetalhe.com/wp-content/uploads/2023/05/apartamento-pequeno-decoracao-simples.jpg"
+    "https://imobiliariacenterhome.com.br/img_imovel/1502-imobiliaria-lages-1502-5vWBl/sala-comercial--GYH0.jpg",
+    "https://www.agvilleimoveis.com.br/uploads/imovel/galeria/big-db6cfc7e4dc3f1cdd51ddd376a396d2f.jpg"
 ])
 
 db.connect(function (err) {
@@ -94,8 +93,8 @@ db.connect(function (err) {
 
     const sql = `
 
-    INSERT INTO endereco (cidade, bairro, rua, numero)
-    VALUES ('Cruz das almas', 'inoocop', 'Marechal floriano', 14);
+    INSERT INTO endereco (cidade, bairro, rua, numero, estado)
+    VALUES ('Cruz das almas', 'centro', 'Avenida principal', 16,'BA');
 
     `;
     // criar endereço, imovel e Associar Imóveis a Clientes Proprietários
@@ -112,7 +111,7 @@ db.connect(function (err) {
             valor_locacao,
             disponivel,
             id_endereco
-            ) VALUES ('2023-02-03', ?,true,500000,true,800,true, ?);
+            ) VALUES ('2023-02-03', ?,true,40000,false,0,true, ?);
     
         `;
         console.log(result.insertId);
@@ -126,7 +125,7 @@ db.connect(function (err) {
                 id_clientep, 
                 id_imovel)
                 VALUES
-                (1, ?);
+                (2, ?);
             
             `
             // Associar Imóveis a Clientes Proprietários
@@ -135,22 +134,15 @@ db.connect(function (err) {
                 console.log("Dados inseridos com seucesso na tabela Associar Imóveis a Clientes Proprietários");
                 return
             });
-            const sql2 = `INSERT INTO Apartamento (
+            const sql2 = `INSERT INTO SalaComercial (
                 id_imovel, 
-                descricao, 
-                qtd_quartos, 
-                qtd_suites, 
-                qtd_sala_estar, 
-                qtd_sala_jantar, 
-                qtd_vagas_garagem, 
-                area_imovel, 
-                arm_embutido,
-                andar, 
-                valor_cond,
-                portaria,
+                descricao,  
+                qtd_banheiro,
+                qtd_comodos,
+                area_imovel,
                 data_registro)
             VALUES
-            (?, 'Casa para vender', 3, 0, 1, 1, 2, 150, false,2,650,true, '2023-10-25');
+            (?, 'Sala comercial', 3, 3, 500, '2018-02-03');
             `
             db.query(sql2, [result.insertId], function (err, result) {
                 if (err) return console.error(err);;

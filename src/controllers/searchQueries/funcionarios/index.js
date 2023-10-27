@@ -8,7 +8,11 @@ class Funcionario {
                 res.status(500).json({ data: "Erro Interno do Servidor" });
             } else {
                 if (results.length > 0) {
-                    res.status(200).json({ data: results });
+                    const response = results.map(e => {
+                        delete e.senha
+                        return e
+                    })
+                    res.status(200).json({ data: response });
                 } else {
                     res.status(404).json({ data: "Nenhum Funcionário Encontrado" });
                 }

@@ -8,7 +8,7 @@ db.connect(function (err) {
         nome, 
         salario_base,
         porcentagem
-        ) VALUES ('Gerente de Vendas', 5000.00,1);
+        ) VALUES ('Vendedor', 1320,1);
 
     `;
     db.query(sql, function (err, result) {
@@ -24,8 +24,8 @@ db.connect(function (err) {
 
     var sql = `
 
-    INSERT INTO endereco (cidade, bairro, rua, numero)
-    VALUES ('São Paulo', 'Jardim Paulista', 'Avenida Paulista', 123);
+    INSERT INTO endereco (cidade, bairro, rua, numero, estado)
+    VALUES ('Salvador', 'Fazenda couto', 'Avenida principal', 15);
 
     `;
     db.query(sql, function (err, result) {
@@ -40,7 +40,7 @@ db.connect(async function (err) {
     if (err) throw err;
 
     try {
-        const senha_hash = await bcrypt.hash("senha123", 10);
+        const senha_hash = await bcrypt.hash("senha12", 10);
 
 
         var sql = `
@@ -58,16 +58,16 @@ db.connect(async function (err) {
                 cargo_id
             )
             VALUES (
-                'Jeovane', 
-                '123-456-7890', 
-                '123.456.789-01', 
+                'Manuela Alves', 
+                '123-456-7899', 
+                '123.456.789-03', 
                 1,
-                '1999-10-10', 
-                '2023-10-16', 
-                'email@example.com', 
-                'jeovane', 
+                '1997-02-01', 
+                '2020-10-16', 
+                'alves@example.com', 
+                'manuela', 
                 ?,    -- Utilize um placeholder para a senha_hash
-                'Solteiro', 
+                'Casada', 
                 1
             );
         `;

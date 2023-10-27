@@ -30,6 +30,7 @@ class Imovel {
 
                     res.status(500).json({ data: "Erro Interno do Servidor" });
                 } else if (results.length > 0) {
+                    console.log(results[3])
 
                     // Convertendo o atributo fotos para array novamente
 
@@ -75,22 +76,22 @@ class Imovel {
         const sql = `
         SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
             FROM Casa c
-            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND c.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND c.id_imovel = i.id)
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND c.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND c.id_imovel = i.id AND i.disponivel = 1)
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
             SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
             FROM Apartamento a
-            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND a.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND a.id_imovel = i.id)
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND a.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND a.id_imovel = i.id AND i.disponivel = 1)
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
             SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
             FROM SalaComercial s
-            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND s.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND s.id_imovel = i.id)
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND s.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND s.id_imovel = i.id AND i.disponivel = 1)
             LEFT JOIN endereco e ON i.id_endereco = e.id
             UNION ALL
             SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
             FROM Terreno t
-            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND t.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND t.id_imovel = i.id)
+            INNER JOIN imovel i ON (i.valor_venda > ? AND i.valor_venda < ? AND t.id_imovel = i.id) OR (i.valor_locacao > ? AND i.valor_locacao < ? AND t.id_imovel = i.id AND i.disponivel = 1)
             LEFT JOIN endereco e ON i.id_endereco = e.id;
         `
 
@@ -412,22 +413,22 @@ class Imovel {
 
         const sql = `SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Casa' AS tipo, c.qtd_quartos,c.qtd_vagas_garagem,c.area_imovel
         FROM Casa c
-        INNER JOIN imovel i ON c.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        INNER JOIN imovel i ON c.id_imovel = i.id AND i.locacao = 1 AND i.venda = 1 AND i.disponivel = 1
         LEFT JOIN endereco e ON i.id_endereco = e.id
         UNION ALL
         SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Apartamento' AS tipo, a.qtd_quartos,a.qtd_vagas_garagem,a.area_imovel
         FROM Apartamento a
-        INNER JOIN imovel i ON a.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        INNER JOIN imovel i ON a.id_imovel = i.id AND i.locacao = 1 AND i.venda = 1 AND i.disponivel = 1
         LEFT JOIN endereco e ON i.id_endereco = e.id
         UNION ALL
         SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Sala Comercial' AS tipo, s.qtd_comodos,s.qtd_banheiro,s.area_imovel
         FROM SalaComercial s
-        INNER JOIN imovel i ON s.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        INNER JOIN imovel i ON s.id_imovel = i.id AND i.locacao = 1 AND i.venda = 1 AND i.disponivel = 1
         LEFT JOIN endereco e ON i.id_endereco = e.id
         UNION ALL
         SELECT i.*, e.cidade, e.bairro,e.estado, e.rua, e.numero, 'Terreno' AS tipo, t.area_imovel,t.largura,t.comprimento
         FROM Terreno t
-        INNER JOIN imovel i ON t.id_imovel = i.id AND i.locacao = 1 OR i.venda = 1 AND i.disponivel = 1
+        INNER JOIN imovel i ON t.id_imovel = i.id AND i.locacao = 1 AND i.venda = 1 AND i.disponivel = 1
         LEFT JOIN endereco e ON i.id_endereco = e.id;`
         // "SELECT * FROM imovel WHERE venda = ? AND disponivel = ?"
         db.query(
