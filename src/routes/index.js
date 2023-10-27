@@ -1,5 +1,8 @@
 const express = require('express')
 const Imovel = require('../controllers/searchQueries/imovel')
+const CriarImovel = require('../controllers/writeQueries/createImovel')
+const ImovelUpdate = require('../controllers/updateQueries/imovel/updateImovel')
+const ImovelDelete = require('../controllers/deleteQueries/imovel/DeleteImovel')
 const Update = require('../controllers/updateQueries/index')
 const Funcionario = require('../controllers/writeQueries/loginFuncionario')
 const Cliente = require('../controllers/writeQueries/createClientes')
@@ -44,7 +47,9 @@ Router.put('/user/update', Update.updateUser)
 Router.post('/proprietario', Cliente.createCliente)
 Router.post('/cliente', Cliente.createCliente)
 
-
+Router.post('/imovel', CriarImovel.meuSuperimoveldacasapropria)
+Router.delete('/imovel/delete', ImovelDelete.deleteImovel)
+Router.put('/imovel/update', ImovelUpdate.atualizarImovel)
 
 Router.get("/contratos", Contrato.listarTodosOsContratos);
 Router.post("/contratos/tipoContrato", Contrato.listarPorTipoDeContrato);
@@ -52,6 +57,8 @@ Router.post("/contratos/cargoFuncionario", Contrato.listarPorCargoDeFuncionario)
 Router.post("/contratos/funcionario", Contrato.listarPorFuncionario);
 Router.post("/contratos/cliente", Contrato.listarPorCliente);
 Router.post("/contratos/detalhar", Contrato.detalharContrato);
+
+//Rotas Criando os Imoveis (separdo por tipo)
 
 
 module.exports = Router;

@@ -173,7 +173,7 @@ db.connect(function (err) {
 
     var sql = `
     CREATE TABLE IF NOT EXISTS imovel (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     id_categoria INT NOT NULL,
     data_construcao DATE NOT NULL,
     fotos TEXT NOT NULL,
