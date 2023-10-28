@@ -1,6 +1,10 @@
 
 # Projeto de Banco de Dados
 
+## Objetivo
+
+Cria uma aplicação web que consuma um banco de dados relacional, com a obrigação de NÃO UTILIZAR ORM (Object Relational Mapping, ou Mapeamento Objeto Relacional) penas usar os conehcimentos de sql aprenditos nas aulas para criar banco de dados, criar tabelas, inserir dados e fazer as buscas solicitadas.
+
 É necessario ter o mysql instalado na sua maquina e o nodeJs.
 
 
