@@ -24,7 +24,7 @@ Cria uma aplicação web que consuma um banco de dados relacional, com a obriga�
         
 ou 
         
-        npm instal
+        npm i
 
 - Agora execute o seguinte comando para criar o banco de dados e testar a conexão
 
